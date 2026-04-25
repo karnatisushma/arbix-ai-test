@@ -1,0 +1,70 @@
+.container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial;
+}
+
+input, select {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: green;
+  color: white;
+  border: none;
+}
+
+.result-card {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-3px);
+}
+
+.score-title {
+  margin: 0;
+  font-size: 18px;
+  color: #166534;
+}
+
+.score-value {
+  font-size: 42px;
+  font-weight: bold;
+  color: #15803d;
+  margin: 10px 0 20px;
+}
+
+.reasons h4 {
+  margin-bottom: 10px;
+  color: #14532d;
+}
+
+.reasons ul {
+  list-style: none;
+  padding: 0;
+}
+
+.reason-item {
+  background: white;
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.error {
+  color: red;
+}
