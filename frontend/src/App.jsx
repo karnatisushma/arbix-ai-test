@@ -19,23 +19,51 @@ function App() {
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
     setError("");
     setResult(null);
 
+    // ✅ Frontend validation
+    if (!form.land_area_acres) {
+        setError("Please enter land area");
+        return;
+    }
+
+    if (!form.crop_type || form.crop_type.trim() === "") {
+        setError("Please enter crop type");
+        return;
+    }
+
+    if (!form.repayment_history_score) {
+        setError("Please enter repayment score");
+        return;
+    }
+
+    if (
+        Number(form.repayment_history_score) < 0 ||
+        Number(form.repayment_history_score) > 100
+    ) {
+        setError("Repayment score must be between 0 and 100");
+        return;
+    }
+
+    setLoading(true);
+
     try {
-      const res = await api.post("/score", {
+        const res = await api.post("/score", {
         ...form,
         land_area_acres: Number(form.land_area_acres),
-        repayment_history_score: Number(form.repayment_history_score)
-      });
-      setResult(res.data);
+        repayment_history_score: Number(form.repayment_history_score),
+        });
+
+        setResult(res.data);
     } catch (err) {
-      setError("Something went wrong. Check inputs.");
+        setError(
+        err.response?.data?.detail || "Server error. Please try again."
+        );
     }
 
     setLoading(false);
-  };
+    };
 
   return (
     <div className="container">
@@ -56,7 +84,11 @@ function App() {
         {loading ? "Processing..." : "Get Score"}
       </button>
 
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <div className="error-box">
+          ⚠️ {error}
+        </div>
+      )}
 
       {result && (
         <div className="result-card">
