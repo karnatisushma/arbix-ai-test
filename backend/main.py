@@ -1,10 +1,15 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from uuid import uuid4
+from datetime import datetime
+
+from models import ScoreRequest, ScoreResponse
+from scoring import calculate_score
+from logger import logger
 
 app = FastAPI()
 
-# ✅ CORS (mandatory)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,22 +18,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class InputData(BaseModel):
-    income: float
-    land_size: float
-
 @app.get("/")
 def home():
-    return {"message": "API is running"}
+    return {"message": "Arbix API Running"}
 
-@app.post("/predict")
-def predict(data: InputData):
-    score = data.income * 0.6 + data.land_size * 0.4
-    
+@app.post("/score", response_model=ScoreResponse)
+def score(data: ScoreRequest):
+    request_id = str(uuid4())
+    timestamp = datetime.utcnow().isoformat()
+
+    score_value, reasons = calculate_score(data)
+
+    logger.info({
+        "request_id": request_id,
+        "input": data.dict(),
+        "score": score_value,
+        "reasons": reasons,
+        "timestamp": timestamp
+    })
+
     return {
-        "score": score,
-        "explanation": {
-            "income_contribution": data.income * 0.6,
-            "land_contribution": data.land_size * 0.4
-        }
+        "request_id": request_id,
+        "score": score_value,
+        "reason_codes": reasons,
+        "timestamp": timestamp
     }
